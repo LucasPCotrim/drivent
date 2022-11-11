@@ -6,7 +6,7 @@ import { exclude } from "@/utils/prisma-utils";
 import { Address, Enrollment } from "@prisma/client";
 import { ViaCEPAddress } from "./../../protocols";
 
-async function getAddressFromCEP(cep: string): Promise<ViaCEPAddress> {
+async function getAddressFromCEP(cep: string): Promise<getAddressFromCEPResult> {
   const result = await request.get(`https://viacep.com.br/ws/${cep}/json/`);
 
   if (!result.data) {
@@ -15,6 +15,7 @@ async function getAddressFromCEP(cep: string): Promise<ViaCEPAddress> {
   const { logradouro, complemento, bairro, localidade: cidade, uf } = result.data;
   return { logradouro, complemento, bairro, cidade, uf };
 }
+type getAddressFromCEPResult = Omit<ViaCEPAddress, "localidade"> & { cidade: string };
 
 async function getOneWithAddressByUserId(userId: number): Promise<GetOneWithAddressByUserIdResult> {
   const enrollmentWithAddress = await enrollmentRepository.findWithAddressByUserId(userId);
