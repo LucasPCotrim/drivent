@@ -45,7 +45,7 @@ async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollm
   const address = getAddressForUpsert(params.address);
 
   const result = await request.get(`https://viacep.com.br/ws/${address.cep.replace("-", "")}/json/`);
-  if (result.data.erro) {
+  if (result.data.erro || !result) {
     throw requestError(400, "Error: Invalid CEP");
   }
   const newEnrollment = await enrollmentRepository.upsert(params.userId, enrollment, exclude(enrollment, "userId"));
