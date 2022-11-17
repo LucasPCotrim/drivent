@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import { prisma } from "@/config";
 
 async function findManyTicketTypes() {
@@ -14,6 +13,20 @@ async function findTicketByUserId(userId: number) {
         },
       },
     },
+    include: {
+      TicketType: true,
+      Enrollment: {
+        include: {
+          User: true,
+        },
+      },
+    },
+  });
+}
+
+async function findTicketById(id: number) {
+  return prisma.ticket.findUnique({
+    where: { id },
     include: {
       TicketType: true,
       Enrollment: {
@@ -41,6 +54,7 @@ async function createTicket(ticketTypeId: number, enrollmentId: number) {
 const ticketsRepository = {
   findManyTicketTypes,
   findTicketByUserId,
+  findTicketById,
   createTicket,
 };
 
