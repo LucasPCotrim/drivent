@@ -1,5 +1,9 @@
 import { Router } from "express";
+import { authenticateToken } from "@/middlewares";
+import { getTicketTypes, getTickets } from "@/controllers/tickets-controller";
 
-const enrollmentsRouter = Router();
+const ticketsRouter = Router();
 
-export { enrollmentsRouter };
+ticketsRouter.all("/*", authenticateToken).get("/types", getTicketTypes).get("/", getTickets);
+
+export { ticketsRouter };
