@@ -1,4 +1,4 @@
-import ticketsRepository from "@/repositories/tickets-repository";
+import ticketsRepository from "@/repositories/ticket-repository";
 import userRepository from "@/repositories/user-repository";
 import enrollmentRepository from "@/repositories/enrollment-repository";
 import { notFoundError } from "@/errors";
