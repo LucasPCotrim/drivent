@@ -9,7 +9,9 @@ async function getHotels(): Promise<Hotel[]> {
 
 async function getHotelRooms(hotelId: number): Promise<Room[]> {
   const hotel = await hotelsRepository.findHotelById(hotelId);
-  if (!hotel) throw notFoundError();
+  if (!hotel) {
+    throw notFoundError();
+  }
 
   const hotelRooms = await hotelsRepository.findHotelRooms(hotelId);
   return hotelRooms;
