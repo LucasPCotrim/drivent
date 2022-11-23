@@ -13,7 +13,7 @@ export async function getHotels(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function getHotelRooms(req: AuthenticatedRequest, res: Response) {
-  const { hotelId } = req.params;
+  const hotelId = Number(req.params.hotelId);
   if (!hotelId) return res.sendStatus(httpStatus.BAD_REQUEST);
 
   try {
