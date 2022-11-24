@@ -3,10 +3,12 @@ import httpStatus from "http-status";
 import supertest from "supertest";
 import faker from "@faker-js/faker";
 import * as jwt from "jsonwebtoken";
-import { createUser } from "../factories";
+import { createPayment, createUser } from "../factories";
 import { cleanDb, generateValidToken } from "../helpers";
 import { createHotel } from "../factories/hotels-factory";
 import { createRoom } from "../factories/rooms-factory";
+import { createTicketType, createTicket } from "../factories/tickets-factory";
+import { createEnrollmentWithAddress } from "../factories/enrollments-factory";
 
 beforeAll(async () => {
   await init();
@@ -45,28 +47,62 @@ describe("GET /hotels", () => {
   });
 
   describe("when token is valid", () => {
-    it("should respond with empty array when there are no hotels created", async () => {
-      const token = await generateValidToken();
+    it("should respond with status 403 when user does not have a ticket that includes hotel", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createTicketType({ isRemote: false, includesHotel: false });
+      await createTicket(enrollment.id, ticketType.id, "RESERVED");
       const response = await server.get("/hotels").set("Authorization", `Bearer ${token}`);
 
-      expect(response.body).toEqual([]);
+      expect(response.status).toBe(httpStatus.FORBIDDEN);
     });
 
-    it("should respond with status 200 and with existing hotels data", async () => {
-      const token = await generateValidToken();
-      const hotel = await createHotel();
+    it("should respond with status 402 when user has an unpaid ticket that includes hotel", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createTicketType({ isRemote: false, includesHotel: true });
+      await createTicket(enrollment.id, ticketType.id, "RESERVED");
       const response = await server.get("/hotels").set("Authorization", `Bearer ${token}`);
 
-      expect(response.status).toBe(httpStatus.OK);
-      expect(response.body).toEqual([
-        {
-          id: hotel.id,
-          name: hotel.name,
-          image: hotel.image,
-          createdAt: hotel.createdAt.toISOString(),
-          updatedAt: hotel.updatedAt.toISOString(),
-        },
-      ]);
+      expect(response.status).toBe(httpStatus.PAYMENT_REQUIRED);
+    });
+
+    describe("when user has payed ticket that includes hotel", () => {
+      it("should respond with empty array when there are no hotels", async () => {
+        const user = await createUser();
+        const token = await generateValidToken(user);
+        const enrollment = await createEnrollmentWithAddress(user);
+        const ticketType = await createTicketType({ isRemote: false, includesHotel: true });
+        const ticket = await createTicket(enrollment.id, ticketType.id, "PAID");
+        await createPayment(ticket.id, ticketType.price);
+        const response = await server.get("/hotels").set("Authorization", `Bearer ${token}`);
+
+        expect(response.body).toEqual([]);
+      });
+
+      it("should respond with status 200 and with existing hotels data", async () => {
+        const user = await createUser();
+        const token = await generateValidToken(user);
+        const enrollment = await createEnrollmentWithAddress(user);
+        const ticketType = await createTicketType({ isRemote: false, includesHotel: true });
+        const ticket = await createTicket(enrollment.id, ticketType.id, "PAID");
+        await createPayment(ticket.id, ticketType.price);
+        const hotel = await createHotel();
+        const response = await server.get("/hotels").set("Authorization", `Bearer ${token}`);
+
+        expect(response.status).toBe(httpStatus.OK);
+        expect(response.body).toEqual([
+          {
+            id: hotel.id,
+            name: hotel.name,
+            image: hotel.image,
+            createdAt: hotel.createdAt.toISOString(),
+            updatedAt: hotel.updatedAt.toISOString(),
+          },
+        ]);
+      });
     });
   });
 });

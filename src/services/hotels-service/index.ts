@@ -1,8 +1,16 @@
 import hotelsRepository from "@/repositories/hotel-repository";
-import { notFoundError } from "@/errors";
+import ticketsRepository from "@/repositories/ticket-repository";
+import { notFoundError, forbiddenError, paymentRequiredError } from "@/errors";
 import { Hotel, Room } from "@prisma/client";
 
-async function getHotels(): Promise<Hotel[]> {
+async function getHotels(userId: number): Promise<Hotel[]> {
+  const ticket = await ticketsRepository.findTicketByUserId(userId);
+  if (!ticket || !ticket.TicketType.includesHotel) {
+    throw forbiddenError();
+  }
+  if (ticket.status !== "PAID") {
+    throw paymentRequiredError();
+  }
   const ticketTypes = await hotelsRepository.findManyHotels();
   return ticketTypes;
 }
