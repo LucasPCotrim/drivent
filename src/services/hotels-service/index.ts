@@ -15,7 +15,14 @@ async function getHotels(userId: number): Promise<Hotel[]> {
   return ticketTypes;
 }
 
-async function getHotelRooms(hotelId: number): Promise<Room[]> {
+async function getHotelRooms(userId: number, hotelId: number): Promise<Room[]> {
+  const ticket = await ticketsRepository.findTicketByUserId(userId);
+  if (!ticket || !ticket.TicketType.includesHotel) {
+    throw forbiddenError();
+  }
+  if (ticket.status !== "PAID") {
+    throw paymentRequiredError();
+  }
   const hotel = await hotelsRepository.findHotelById(hotelId);
   if (!hotel) {
     throw notFoundError();
