@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/middlewares/validation-middleware.ts</title>
+    <title>Code coverage report for src/controllers/hotels-controller.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/middlewares</a> validation-middleware.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/controllers</a> hotels-controller.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/12</span>
+                <span class='fraction'>24/27</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">83.33% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>5/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Branches</span>
+                <span class="quiet">Functions</span>
                 <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>4/5</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">90.9% </span>
+                <span class="strong">90.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/11</span>
+                <span class='fraction'>19/21</span>
             </div>
         
             
@@ -91,62 +91,74 @@
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
 <a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">10x</span>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">50x</span>
-<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { invalidDataError } from "@/errors";
-import { NextFunction, Request, Response } from "express";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { AuthenticatedRequest } from "@/middlewares";
+import hotelsService from "@/services/hotels-service";
+import { Response } from "express";
 import httpStatus from "http-status";
-import { ObjectSchema } from "joi";
 &nbsp;
-export function validateBody&lt;T&gt;(schema: ObjectSchema&lt;T&gt;): ValidationMiddleware {
-  return validate(schema, "body");
+export async function getHotels(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  try {
+    const hotels = await hotelsService.getHotels(userId);
+    return res.status(httpStatus.OK).send(hotels);
+  } catch (error) {
+    if (error.name === "ForbiddenError") return res.sendStatus(httpStatus.FORBIDDEN);
+    if (error.name === "PaymentRequiredError") return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
+<span class="cstat-no" title="statement not covered" >    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);</span>
+  }
 }
 &nbsp;
-export function <span class="fstat-no" title="function not covered" >validateParams&lt;</span>T&gt;(schema: ObjectSchema&lt;T&gt;): ValidationMiddleware {
-<span class="cstat-no" title="statement not covered" >  return validate(schema, "params");</span>
+export async function getHotelRooms(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const hotelId = Number(req.params.hotelId);
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!hotelId) <span class="cstat-no" title="statement not covered" >return res.sendStatus(httpStatus.BAD_REQUEST);</span>
+&nbsp;
+  try {
+    const hotelRooms = await hotelsService.getHotelRooms(userId, hotelId);
+    return res.status(httpStatus.OK).send(hotelRooms);
+  } catch (error) {
+    if (error.name === "ForbiddenError") return res.sendStatus(httpStatus.FORBIDDEN);
+    if (error.name === "PaymentRequiredError") return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
+    if (error.name === "NotFoundError") return res.sendStatus(httpStatus.NOT_FOUND);
+<span class="cstat-no" title="statement not covered" >    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);</span>
+  }
 }
-&nbsp;
-function validate(schema: ObjectSchema, type: "body" | "params") {
-  return (req: Request, res: Response, next: NextFunction) =&gt; {
-    const { error } = schema.validate(req[type], {
-      abortEarly: false,
-    });
-&nbsp;
-    if (!error) {
-      next();
-    } else {
-      res.status(httpStatus.BAD_REQUEST).send(invalidDataError(error.details.map((d) =&gt; d.message)));
-    }
-  };
-}
-&nbsp;
-type ValidationMiddleware = (req: Request, res: Response, next: NextFunction)=&gt; void;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
