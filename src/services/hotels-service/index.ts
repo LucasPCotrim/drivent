@@ -15,7 +15,7 @@ async function getHotels(userId: number): Promise<Hotel[]> {
   return ticketTypes;
 }
 
-async function getHotelRooms(userId: number, hotelId: number): Promise<Room[]> {
+async function getHotelRooms(userId: number, hotelId: number): Promise<getHotelRoomsResult> {
   const ticket = await ticketsRepository.findTicketByUserId(userId);
   if (!ticket || !ticket.TicketType.includesHotel) {
     throw forbiddenError();
@@ -31,6 +31,7 @@ async function getHotelRooms(userId: number, hotelId: number): Promise<Room[]> {
   const hotelRooms = await hotelsRepository.findHotelRooms(hotelId);
   return hotelRooms;
 }
+type getHotelRoomsResult = Hotel & { Rooms: Room[] };
 
 const hotelsService = { getHotels, getHotelRooms };
 
