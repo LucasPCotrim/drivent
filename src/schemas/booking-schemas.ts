@@ -1,5 +1,5 @@
 import Joi from "joi";
 
-export const createBookingSchema = Joi.object({
+export const createorUpdateBookingSchema = Joi.object({
   roomId: Joi.number().required(),
 });
