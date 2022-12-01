@@ -343,6 +343,25 @@ describe("PUT /booking/:bookingId", () => {
       expect(response.status).toBe(httpStatus.FORBIDDEN);
     });
 
+    it("should respond with status 403 if user attempts to update another user's booking", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createTicketType({ isRemote: false, includesHotel: true });
+      await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+      const hotel = await createHotel();
+      const room = await createRoom({ hotelId: hotel.id, capacity: 1 });
+      const otherUser = await createUser();
+      const booking = await createBooking({ userId: otherUser.id, roomId: room.id });
+
+      const response = await server
+        .put(`/booking/${booking.id}`)
+        .set("Authorization", `Bearer ${token}`)
+        .send({ roomId: room.id });
+
+      expect(response.status).toBe(httpStatus.FORBIDDEN);
+    });
+
     it("should respond with status 403 if user attempts to update booking to the same room", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
