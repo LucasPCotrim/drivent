@@ -9,8 +9,9 @@ export async function getBooking(req: AuthenticatedRequest, res: Response) {
     const booking = await bookingService.getBooking(userId);
     return res.status(httpStatus.OK).send(booking);
   } catch (error) {
-    if (error.name === "NotFoundError") return res.sendStatus(httpStatus.NOT_FOUND);
-    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    if (error.name === "NotFoundError") {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }
   }
 }
 
@@ -21,9 +22,12 @@ export async function createBooking(req: AuthenticatedRequest, res: Response) {
     const booking = await bookingService.createBooking(userId, roomId);
     return res.status(httpStatus.OK).send({ bookingId: booking.id });
   } catch (error) {
-    if (error.name === "NotFoundError") return res.sendStatus(httpStatus.NOT_FOUND);
-    if (error.name === "ForbiddenError") return res.sendStatus(httpStatus.FORBIDDEN);
-    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    if (error.name === "NotFoundError") {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }
+    if (error.name === "ForbiddenError") {
+      return res.sendStatus(httpStatus.FORBIDDEN);
+    }
   }
 }
 
@@ -37,8 +41,11 @@ export async function updateBooking(req: AuthenticatedRequest, res: Response) {
     const booking = await bookingService.updateBooking(userId, roomId, bookingId);
     return res.status(httpStatus.OK).send({ bookingId: booking.id });
   } catch (error) {
-    if (error.name === "NotFoundError") return res.sendStatus(httpStatus.NOT_FOUND);
-    if (error.name === "ForbiddenError") return res.sendStatus(httpStatus.FORBIDDEN);
-    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    if (error.name === "NotFoundError") {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }
+    if (error.name === "ForbiddenError") {
+      return res.sendStatus(httpStatus.FORBIDDEN);
+    }
   }
 }
