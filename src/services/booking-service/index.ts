@@ -3,15 +3,21 @@ import ticketsRepository from "@/repositories/ticket-repository";
 import roomsRepository from "@/repositories/rooms-repository";
 import { notFoundError, forbiddenError } from "@/errors";
 import { Booking, Room, TicketStatus } from "@prisma/client";
+import { exclude } from "@/utils/prisma-utils";
 
 async function getBooking(userId: number): Promise<getBookingResult> {
   const booking = await bookingRepository.findBookingByUserId(userId);
   if (!booking) {
     throw notFoundError();
   }
-  return booking;
+  return {
+    ...exclude(booking, "createdAt", "updatedAt", "userId", "roomId"),
+    Room: { ...exclude(booking.Room, "createdAt", "updatedAt") },
+  };
 }
-type getBookingResult = Omit<Booking, "userId" | "createdAt" | "updatedAt"> & { Room: Room };
+type getBookingResult = Omit<Booking, "userId" | "roomId" | "createdAt" | "updatedAt"> & {
+  Room: Omit<Room, "createdAt" | "updatedAt">;
+};
 
 async function createBooking(userId: number, roomId: number): Promise<Booking> {
   const ticket = await ticketsRepository.findTicketByUserId(userId);

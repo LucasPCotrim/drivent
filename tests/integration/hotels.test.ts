@@ -19,10 +19,6 @@ beforeEach(async () => {
   await cleanDb();
 });
 
-// afterAll(async () => {
-//   await cleanDb();
-// });
-
 const server = supertest(app);
 
 describe("GET /hotels", () => {
@@ -193,7 +189,7 @@ describe("GET /hotels/:hotelId", () => {
 
       it("should respond with status 200 and with existing hotel rooms data", async () => {
         const hotel = await createHotel();
-        const room = await createRoom(hotel.id);
+        const room = await createRoom({ hotelId: hotel.id });
         const user = await createUser();
         const token = await generateValidToken(user);
         const enrollment = await createEnrollmentWithAddress(user);
