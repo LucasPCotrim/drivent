@@ -7,9 +7,8 @@ import { exclude } from "@/utils/prisma-utils";
 
 async function getBooking(userId: number): Promise<getBookingResult> {
   const booking = await bookingRepository.findBookingByUserId(userId);
-  if (!booking) {
-    throw notFoundError();
-  }
+  if (!booking) throw notFoundError();
+
   return {
     ...exclude(booking, "createdAt", "updatedAt", "userId", "roomId"),
     Room: { ...exclude(booking.Room, "createdAt", "updatedAt") },
@@ -23,7 +22,7 @@ async function createBooking(userId: number, roomId: number): Promise<Booking> {
   const ticket = await ticketsRepository.findTicketByUserId(userId);
   if (
     !ticket ||
-    !ticket.TicketType.isRemote ||
+    ticket.TicketType.isRemote ||
     !ticket.TicketType.includesHotel ||
     ticket.status !== TicketStatus.PAID
   ) {
@@ -31,14 +30,13 @@ async function createBooking(userId: number, roomId: number): Promise<Booking> {
   }
 
   const room = await roomsRepository.findRoomById(roomId);
-  if (!room) {
-    throw notFoundError();
-  }
+  if (!room) throw notFoundError();
 
-  const currentBookings = await bookingRepository.findBookingsByRoomId(room.id);
-  if (currentBookings.length >= room.capacity) {
-    throw forbiddenError();
-  }
+  const currentUserBooking = await bookingRepository.findBookingByUserId(userId);
+  if (currentUserBooking) throw forbiddenError();
+
+  const currentRoomBookings = await bookingRepository.findBookingsByRoomId(room.id);
+  if (currentRoomBookings.length >= room.capacity) throw forbiddenError();
 
   const booking = await bookingRepository.createBooking(userId, roomId);
   return booking;
@@ -48,7 +46,7 @@ async function updateBooking(userId: number, newRoomId: number, bookingId: numbe
   const ticket = await ticketsRepository.findTicketByUserId(userId);
   if (
     !ticket ||
-    !ticket.TicketType.isRemote ||
+    ticket.TicketType.isRemote ||
     !ticket.TicketType.includesHotel ||
     ticket.status !== TicketStatus.PAID
   ) {
